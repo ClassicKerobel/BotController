@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+       android:key="socketServer"
+       android:title="Socket Server"
+       android:dialogTitle="Socket Server"/>
+    <EditTextPreference
+        android:dialogTitle="Video Server"
+        android:key="videoServer"
+        android:title="Video Server"/>
+</PreferenceScreen>
