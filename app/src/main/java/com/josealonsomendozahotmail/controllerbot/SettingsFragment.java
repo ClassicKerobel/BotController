@@ -28,8 +28,6 @@ public class SettingsFragment extends PreferenceFragment implements
         editTextVideo = (EditTextPreference) findPreference("videoServer");
 
         Log.d(TAG, "SettingsFragment initialized");
-
-
     }
 
     @Override
