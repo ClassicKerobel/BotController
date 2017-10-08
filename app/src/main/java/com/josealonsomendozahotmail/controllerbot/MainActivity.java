@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.hardware.usb.UsbManager;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     public String dataToSend;
     public final String ACTION_USB_PERMISSION = "com.josealonsomendozahotmail.controllerbot";
     public UsbSerialDevice serialPort;
-    public Boolean isDeviceAttached;
+    public Boolean isDeviceConnected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         String socketHost = settings.getString("socketServer", "");
-        String videoHost = settings.getString("videoServer", "");
+//        String videoHost = settings.getString("videoServer", "");
         socketClient(socketHost);
 
         Log.d(TAG, "socketHost " + socketHost);
@@ -120,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
     public void onClickStart(View view) {
         HashMap<String, UsbDevice> usbDevices = usbManager.getDeviceList();
         if (!usbDevices.isEmpty()) {
+            isDeviceConnected = true;
             boolean keep = true;
             for (Map.Entry<String, UsbDevice> entry : usbDevices.entrySet()) {
                 device = entry.getValue();
@@ -144,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
     public void onClickStop(View view) {
         setUiEnabled(false);
         serialPort.close();
+        isDeviceConnected = false;
         tvAppend(textView, "\nSerial Connection Closed! \n");
     }
 
@@ -156,6 +159,15 @@ public class MainActivity extends AppCompatActivity {
         tvAppend(textView, "\nData Sent : " + string + "\n");
         serialPort.write(string.getBytes());
         textView.setText(string);
+    }
+
+    public void onClickVideo(View view) {
+
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        String videoHost = settings.getString("videoServer", "");
+
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(videoHost));
+        startActivity(browserIntent);
     }
 
     // Callback which triggers whenever data is read
@@ -252,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Connection event
         // When the app connects to the server
-        Emitter on = socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+        socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
 
             @Override
             public void call(Object... args) {
@@ -270,7 +282,7 @@ public class MainActivity extends AppCompatActivity {
                     serialPort.write(direction.getBytes());
                 }
 //                tvAppend(textView, direction);
-                Log.d(TAG, direction);
+//                Log.d(TAG, direction);
             }
 
         }).on("info", new Emitter.Listener() {

@@ -34,6 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Video"
+        android:onClick="onClickVideo"
         tools:layout_editor_absoluteX="277dp"
         tools:layout_editor_absoluteY="444dp"
         android:layout_alignParentTop="true"
